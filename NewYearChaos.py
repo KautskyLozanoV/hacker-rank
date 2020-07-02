@@ -10,7 +10,8 @@ import sys
 def minimumBribes(q):
     bribes = 0
     too_chaotic = False
-    queue = [p for p in range(1, len(q) + 1)]
+    total_people = len(q)
+    queue = [p for p in range(1, total_people + 1)]
     totalBribes = 0
     for i, e in reversed(list(enumerate(q))):
         briber = queue[i]
