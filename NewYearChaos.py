@@ -13,12 +13,13 @@ def minimumBribes(q):
     total_people = len(q)
     queue = [p for p in range(1, total_people + 1)]
     totalBribes = 0
-    for i, e in reversed(list(enumerate(q))):
+    for i in range(total_people + 1):
+        i = total_people - i - 1
         briber = queue[i]
         briber_current_index = q.index(briber, 0, i + 1)
         briber_expected_index = i
 
-        bribed = e
+        bribed = q[i]
         bribed_current_index = i
         bribed_expected_index = queue.index(bribed, 0 , i + 1)
 
