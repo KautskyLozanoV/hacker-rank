@@ -8,7 +8,6 @@ import sys
 
 # Complete the minimumBribes function below.
 def minimumBribes(q):
-    bribes = 0
     too_chaotic = False
     total_people = len(q)
     queue = [p for p in range(1, total_people + 1)]
@@ -16,18 +15,21 @@ def minimumBribes(q):
     for i in range(total_people + 1):
         i = total_people - i - 1
         briber = queue[i]
-        briber_current_index = q.index(briber, 0, i + 1)
         briber_expected_index = i
+        # the briber can't be two places ahead of its original location
+        briber_original_index = briber - 1
+        if briber_original_index > 1:
+            try:
+                start = briber_original_index -2
+                end = briber_original_index + 1
+                q.index(briber, start, end)
+            except ValueError:
+                too_chaotic = True
+                break
 
         bribed = q[i]
         bribed_current_index = i
-        bribed_expected_index = queue.index(bribed, 0 , i + 1)
-
-        # number of spots the briber has advanced
-        bribes = briber_expected_index - briber_current_index
-        if bribes > 2:
-            too_chaotic = True
-            break
+        bribed_expected_index = queue.index(bribed, 0 , i + 1)              
 
         # number of times the bribed has been bribed. Not all bribes were from the current briber
         timesBribedBribed = bribed_current_index - bribed_expected_index
@@ -42,11 +44,14 @@ def minimumBribes(q):
     print(totalBribes if not too_chaotic else 'Too chaotic')
   
 if __name__ == '__main__':
-    t = int(input())
+
+    f = open('NewYearChaos-Case9.txt', 'r')
+
+    t = int(f.readline())
 
     for t_itr in range(t):
-        n = int(input())
+        n = int(f.readline())
 
-        q = list(map(int, input().rstrip().split()))
+        q = list(map(int, f.readline().rstrip().split()))
 
         minimumBribes(q)
