@@ -1,47 +1,51 @@
 #!/bin/python3
 
-import math
-import os
-import random
-import re
-import sys
+def findValueIndex(dict, value, start = 0, end = 0):
+    if end == 0:
+        end = len(dict)
+
+    if start < 0:
+        start = 0
+
+    for i in range(start, end):
+        currentValue = dict[i]
+        if value == currentValue:
+            return i
 
 # Complete the minimumBribes function below.
 def minimumBribes(q):
     too_chaotic = False
     total_people = len(q)
-    queue = [p for p in range(1, total_people + 1)]
-    totalBribes = 0
-    for i in range(total_people + 1):
+    queue = {p: p+1 for p in range(0, total_people)}
+    total_bribes = 0
+    for i in range(total_people):
         i = total_people - i - 1
-        briber = queue[i]
-        briber_expected_index = i
-        # the briber can't be two places ahead of its original location
-        briber_original_index = briber - 1
-        if briber_original_index > 1:
-            try:
-                start = briber_original_index -2
-                end = briber_original_index + 1
-                q.index(briber, start, end)
-            except ValueError:
+
+        current = q[i]
+        if current - (i+1) > 2:
+            too_chaotic = True
+            break
+
+        original = queue[i]
+        if current == original:
+            continue
+        elif current > original:
+            # current is a briber
+            if current - original > 2:
+                too_chaotic = True
+                break
+        else:
+            # current was bribed
+            current_index_in_original = findValueIndex(queue, current, current - 3, i + 1)
+            if current_index_in_original == None:
                 too_chaotic = True
                 break
 
-        bribed = q[i]
-        bribed_current_index = i
-        bribed_expected_index = queue.index(bribed, 0 , i + 1)              
-
-        # number of times the bribed has been bribed. Not all bribes were from the current briber
-        timesBribedBribed = bribed_current_index - bribed_expected_index
-        totalBribes += timesBribedBribed
-
-        queue.pop(bribed_expected_index)
-        queue.insert(briber_expected_index, bribed)
-
-        if(queue == q):
-            break
-    
-    print(totalBribes if not too_chaotic else 'Too chaotic')
+            total_bribes += i - current_index_in_original            
+            for j in range(current_index_in_original, i):                                
+                queue[j], queue[j+1] = queue[j+1], queue[j]
+       
+    print(total_bribes if not too_chaotic else 'Too chaotic')
   
 if __name__ == '__main__':
 
